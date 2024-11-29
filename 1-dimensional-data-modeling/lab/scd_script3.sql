@@ -1,9 +1,3 @@
--- create type actors_scd_type AS(
--- 	quality_class quality_class,
--- 	is_active BOOLEAN,
--- 	start_year INTEGER,
--- 	end_year INTEGER
--- );
 with last_year_scd as (
 	select * from actors_scd 
 	where current_year=2020
@@ -77,3 +71,4 @@ union all
 select * from unnested_changed_records 
 union all
 select * from new_records 
+
