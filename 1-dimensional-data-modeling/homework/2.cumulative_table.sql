@@ -2,7 +2,9 @@ insert into actors
 with last_year as (
 	select *
 	from actors af 
-	where af.year = 1972
+	where af.year = (
+		select coalesce(MAX(year),1969) from actors 
+	)
 ),
 current_year as (
 	select actor,
@@ -18,7 +20,9 @@ current_year as (
 	AVG(rating) as average_rating,
 	true as is_active
 	from actor_films af 
-	where af.year = 1973
+	where af.year = (
+		select coalesce(MAX(year)+1,1970) from actors 
+	)
 	group by actor,year
 	
 ),
@@ -36,7 +40,7 @@ players_films_unnested as (
 		when cy.average_rating>8 then 'star'
 		when cy.average_rating>7 and cy.average_rating <= 8  then 'good'
 		when cy.average_rating>6 and cy.average_rating <= 7  then 'average'
-		else 'bad' end
+		else 'bad' end::quality_class
 	else ly.quality_class end as quality_class,
 	coalesce (cy.is_active, FALSE) as is_active
 	from current_year cy full outer join last_year ly
